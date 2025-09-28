@@ -1,15 +1,13 @@
-# tests/test_input_validation.py
 import builtins
 import pytest
 from calculator import cli
 
 def run_cli_with_inputs(monkeypatch, inputs):
-    """Helper to simulate user input and capture printed output."""
     it = iter(inputs)
     monkeypatch.setattr(builtins, "input", lambda _: next(it))
     outputs = []
     monkeypatch.setattr("builtins.print", outputs.append)
-    with pytest.raises(SystemExit):  # main() exits on 'exit'
+    with pytest.raises(SystemExit):
         cli.main()
     return outputs
 
