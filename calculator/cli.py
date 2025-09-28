@@ -1,45 +1,44 @@
-from typing import Tuple, List
-from calculator.operations import perform_operation, normalize_operation
+# calculator/cli.py
 
-def parse_numbers(tokens: List[str]) -> Tuple[float, float]:
-    if len(tokens) != 2:
-        raise ValueError("Please enter exactly two numbers.")
-    try:
-        a = float(tokens[0]); b = float(tokens[1])
-    except ValueError:
-        raise ValueError("Both inputs must be numbers.")
-    return a, b
+import sys
+from calculator import operations
 
-def process_command(op_token: str, num_tokens: List[str]) -> float:
-    op = normalize_operation(op_token)
-    a, b = parse_numbers(num_tokens)
-    return perform_operation(op, a, b)
+def main():
+    print("Welcome to the Interactive Calculator!")
+    print("Available operations: add, subtract, multiply, divide, exit")
 
-def print_help() -> None:
-    print("Simple calculator REPL commands:")
-    print("  add | +  : addition")
-    print("  sub | -  : subtraction")
-    print("  mul | *  : multiplication")
-    print("  div | /  : division")
-    print("  quit | q : exit")
-
-def run_repl() -> None:
-    print("Welcome to the calculator. Type 'help' for commands.")
     while True:
+        op = input("Enter operation: ").strip().lower()
+
+        if op == "exit":
+            print("Goodbye!")
+            sys.exit(0)
+
+        if op not in ["add", "subtract", "multiply", "divide"]:
+            print("Invalid operation. Try again.")
+            continue
+
         try:
-            raw_op = input("Operation: ").strip()
-            if raw_op.lower() in ("quit","q","exit"):
-                print("Goodbye."); break
-            if raw_op.lower() in ("help","h","?"):
-                print_help(); continue
-            raw_nums = input("Enter two numbers separated by space: ").split()
+            num1 = float(input("Enter first number: "))
+            num2 = float(input("Enter second number: "))
+        except ValueError:
+            print("Invalid number entered.")
+            continue
+
+        if op == "add":
+            result = operations.add(num1, num2)
+        elif op == "subtract":
+            result = operations.subtract(num1, num2)
+        elif op == "multiply":
+            result = operations.multiply(num1, num2)
+        elif op == "divide":
             try:
-                result = process_command(raw_op, raw_nums)
-            except Exception as e:
-                print(f"Error: {e}"); continue
-            print(f"Result: {result}")
-        except KeyboardInterrupt:
-            print("\nInterrupted. Exiting."); break
+                result = operations.divide(num1, num2)
+            except ZeroDivisionError:
+                print("Cannot divide by zero")
+                continue
+
+        print(f"Result: {result}")
 
 if __name__ == "__main__":
-    run_repl()
+    main()
