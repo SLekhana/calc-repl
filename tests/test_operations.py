@@ -1,19 +1,19 @@
-# calculator/operations.py
+from calculator import operations
 
-def add(a, b):
-    """Return the sum of a and b."""
-    return a + b
+def test_add():
+    assert operations.add(2, 3) == 5
 
-def subtract(a, b):
-    """Return the difference of a and b."""
-    return a - b
+def test_subtract():
+    assert operations.subtract(5, 3) == 2
 
-def multiply(a, b):
-    """Return the product of a and b."""
-    return a * b
+def test_multiply():
+    assert operations.multiply(4, 2) == 8
 
-def divide(a, b):
-    """Return the quotient of a and b. Raise ValueError if dividing by zero."""
-    if b == 0:
-        raise ValueError("Cannot divide by zero")
-    return a / b
+def test_divide():
+    assert operations.divide(8, 2) == 4
+
+def test_divide_by_zero():
+    try:
+        operations.divide(5, 0)
+    except ValueError as e:
+        assert str(e) == "Cannot divide by zero"
