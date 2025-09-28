@@ -34,4 +34,12 @@ def test_multiplication(monkeypatch):
 
 def test_division(monkeypatch):
     outputs = run_cli_with_inputs(monkeypatch, ["divide", "8", "2", "exit"])
-    assert any("
+    assert any("Result: 4.0" in o for o in outputs)
+
+def test_divide_by_zero(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["divide", "4", "0", "exit"])
+    assert any("Cannot divide by zero" in o for o in outputs)
+
+def test_invalid_operation(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["foobar", "exit"])
+    assert any("Invalid operation. Try again." in o for o in outputs)
