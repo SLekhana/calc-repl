@@ -1,5 +1,3 @@
-# calculator/cli.py
-
 import sys
 from calculator import operations
 
@@ -34,12 +32,9 @@ def main():
                 result = operations.multiply(num1, num2)
             elif op == "divide":
                 result = operations.divide(num1, num2)
-
-            print(f"Result: {result}")
-
         except ValueError as e:
-            # Catch divide-by-zero and other operation errors
+            # Catch division by zero
             print(e)
+            continue
 
-if __name__ == "__main__":
-    main()
+        print(f"Result: {result}")
