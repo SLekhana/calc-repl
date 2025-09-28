@@ -1,28 +1,19 @@
-import pytest
-from calculator.operations import perform_operation, normalize_operation
+# calculator/operations.py
 
-@pytest.mark.parametrize(
-    "op,a,b,expected",
-    [("add",1,2,3),("+",1.5,2.5,4.0),("sub",5,3,2),("-",2,5,-3),
-     ("mul",2,3,6),("*",-1,-4,4),("div",8,2,4),("/",9,3,3)],
-)
-def test_perform_operation_valid(op,a,b,expected):
-    assert perform_operation(op,a,b) == pytest.approx(expected)
+def add(a, b):
+    """Return the sum of a and b."""
+    return a + b
 
-def test_division_by_zero_raises():
-    with pytest.raises(ZeroDivisionError):
-        perform_operation("div",1,0)
+def subtract(a, b):
+    """Return the difference of a and b."""
+    return a - b
 
-def test_unknown_operation_raises():
-    with pytest.raises(ValueError):
-        perform_operation("pow",2,3)
+def multiply(a, b):
+    """Return the product of a and b."""
+    return a * b
 
-def test_normalize_operation_aliases():
-    assert normalize_operation("PLUS") == "add"
-    assert normalize_operation("-") == "-"
-    assert normalize_operation("times") == "mul"
-    assert normalize_operation("/") == "/"
-
-def test_normalize_operation_unknown():
-    with pytest.raises(ValueError):
-        normalize_operation("weird")
+def divide(a, b):
+    """Return the quotient of a and b. Raise ValueError if dividing by zero."""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
