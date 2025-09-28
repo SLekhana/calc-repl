@@ -1,6 +1,6 @@
 # calculator/cli.py
 import sys
-from . import operations
+from calculator import operations
 
 def main():
     print("Welcome to the Interactive Calculator!")
@@ -33,9 +33,8 @@ def main():
                 result = operations.multiply(num1, num2)
             elif op == "divide":
                 result = operations.divide(num1, num2)
+
             print(f"Result: {result}")
+
         except ValueError as e:
             print(e)
-
-if __name__ == "__main__":
-    main()
