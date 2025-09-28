@@ -1,4 +1,5 @@
 # calculator/cli.py
+
 import sys
 from calculator import operations
 
@@ -37,4 +38,8 @@ def main():
             print(f"Result: {result}")
 
         except ValueError as e:
+            # Catch divide-by-zero and other operation errors
             print(e)
+
+if __name__ == "__main__":
+    main()
