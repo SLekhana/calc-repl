@@ -31,9 +31,11 @@ def main():
             elif op == "multiply":
                 result = operations.multiply(num1, num2)
             elif op == "divide":
+                if num2 == 0:
+                    print("Cannot divide by zero")
+                    continue
                 result = operations.divide(num1, num2)
         except ValueError as e:
-            # Catch division by zero
             print(e)
             continue
 
