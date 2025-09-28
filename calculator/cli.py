@@ -1,7 +1,6 @@
 # calculator/cli.py
-
 import sys
-from calculator import operations
+from . import operations
 
 def main():
     print("Welcome to the Interactive Calculator!")
@@ -25,20 +24,18 @@ def main():
             print("Invalid number entered.")
             continue
 
-        if op == "add":
-            result = operations.add(num1, num2)
-        elif op == "subtract":
-            result = operations.subtract(num1, num2)
-        elif op == "multiply":
-            result = operations.multiply(num1, num2)
-        elif op == "divide":
-            try:
+        try:
+            if op == "add":
+                result = operations.add(num1, num2)
+            elif op == "subtract":
+                result = operations.subtract(num1, num2)
+            elif op == "multiply":
+                result = operations.multiply(num1, num2)
+            elif op == "divide":
                 result = operations.divide(num1, num2)
-            except ZeroDivisionError:
-                print("Cannot divide by zero")
-                continue
-
-        print(f"Result: {result}")
+            print(f"Result: {result}")
+        except ValueError as e:
+            print(e)
 
 if __name__ == "__main__":
     main()
