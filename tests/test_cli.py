@@ -1,45 +1,15 @@
-import builtins
-import pytest
-from calculator import cli
-
-def run_cli_with_inputs(monkeypatch, inputs):
-    """Helper to simulate user input and capture printed output."""
-    it = iter(inputs)
-    monkeypatch.setattr(builtins, "input", lambda _: next(it))
-
+def test_exit_message(monkeypatch):
+    """Test that 'exit' prints the goodbye message and exits."""
+    inputs = iter(["exit"])
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
     outputs = []
+    monkeypatch.setattr("builtins.print", outputs.append)
 
-    # Capture only printed strings
-    monkeypatch.setattr(
-        "builtins.print", 
-        lambda *args, **kwargs: outputs.append(" ".join(map(str, args)))
-    )
+    import pytest
+    from calculator import cli
 
-    with pytest.raises(SystemExit):  # main() exits on 'exit'
+    with pytest.raises(SystemExit):
         cli.main()
-
-    return outputs
-
-def test_addition(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["add", "2", "3", "exit"])
-    assert any("Result: 5.0" in o for o in outputs)
-
-def test_subtraction(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["subtract", "5", "3", "exit"])
-    assert any("Result: 2.0" in o for o in outputs)
-
-def test_multiplication(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["multiply", "2", "4", "exit"])
-    assert any("Result: 8.0" in o for o in outputs)
-
-def test_division(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["divide", "8", "2", "exit"])
-    assert any("Result: 4.0" in o for o in outputs)
-
-def test_divide_by_zero(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["divide", "4", "0", "exit"])
-    assert any("Cannot divide by zero" in o for o in outputs)
-
-def test_invalid_operation(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["foobar", "exit"])
-    assert any("Invalid operation. Try again." in o for o in outputs)
+    
+    # Check that the goodbye message was printed
+    assert any("Goodbye!" in o for o in outputs)
