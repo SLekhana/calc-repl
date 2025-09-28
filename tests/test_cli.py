@@ -1,15 +1,36 @@
+import builtins
 import pytest
-from calculator.cli import process_command
-from calculator.operations import perform_operation
+from calculator import cli
 
-def test_process_command_success():
-    res = process_command("add",["2","3"])
-    assert res == perform_operation("add",2.0,3.0)
+def run_cli_with_inputs(monkeypatch, inputs):
+    """Helper to simulate user input and capture printed output."""
+    it = iter(inputs)
+    monkeypatch.setattr(builtins, "input", lambda _: next(it))
+    outputs = []
+    monkeypatch.setattr("builtins.print", outputs.append)
+    with pytest.raises(SystemExit):  # main() exits on 'exit'
+        cli.main()
+    return outputs
 
-def test_process_command_invalid_op():
-    with pytest.raises(Exception):
-        process_command("pow",["2","3"])
+def test_addition(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["add", "2", "3", "exit"])
+    assert "Result: 5.0" in outputs
 
-def test_process_command_invalid_numbers():
-    with pytest.raises(Exception):
-        process_command("add",["two","three"])
+def test_subtraction(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["subtract", "5", "3", "exit"])
+    assert "Result: 2.0" in outputs
+
+def test_multiplication(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["multiply", "2", "4", "exit"])
+    assert "Result: 8.0" in outputs
+
+def test_division(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["divide", "8", "2", "exit"])
+    assert "Result: 4.0" in outputs
+
+def test_divide_by_zero(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["divide", "4", "0", "exit"])
+    assert any("Cannot divide by zero" in o for o in outputs)
+
+def test_invalid_operation(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["foobar", "exi]()_
