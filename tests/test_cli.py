@@ -33,4 +33,4 @@ def test_divide_by_zero(monkeypatch):
     assert any("Cannot divide by zero" in o for o in outputs)
 
 def test_invalid_operation(monkeypatch):
-    outputs = run_cli_with_inputs(monkeypatch, ["foobar", "exi]()_
+    outputs = run_cli_with_inputs(monkeypatch, ["foobar", "exit"])
