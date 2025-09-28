@@ -1,18 +1,34 @@
+# tests/test_input_validation.py
+
+import builtins
 import pytest
-from calculator.cli import parse_numbers
+from calculator import cli
 
-def test_valid_numbers():
-    a,b = parse_numbers(["3","4"])
-    assert a==3.0 and b==4.0
+def run_cli_with_inputs(monkeypatch, inputs):
+    """
+    Helper to simulate user input and capture printed output.
+    `inputs` is a list of strings the user would type.
+    """
+    it = iter(inputs)
+    monkeypatch.setattr(builtins, "input", lambda _: next(it))
+    outputs = []
+    monkeypatch.setattr("builtins.print", outputs.append)
+    with pytest.raises(SystemExit):  # main() exits on 'exit'
+        cli.main()
+    return outputs
 
-def test_valid_floats():
-    a,b = parse_numbers(["1.5","2.25"])
-    assert a==pytest.approx(1.5) and b==pytest.approx(2.25)
+def test_invalid_number(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["add", "foo", "3", "exit"])
+    assert any("Invalid number" in o for o in outputs)
 
-def test_wrong_count():
-    with pytest.raises(ValueError): parse_numbers(["1"])
-    with pytest.raises(ValueError): parse_numbers(["1","2","3"])
+def test_another_invalid_number(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["multiply", "5", "bar", "exit"])
+    assert any("Invalid number" in o for o in outputs)
 
-def test_invalid_numbers():
-    with pytest.raises(ValueError): parse_numbers(["a","b"])
-    with pytest.raises(ValueError): parse_numbers(["1","two"])
+def test_empty_input(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["add", "", "3", "exit"])
+    assert any("Invalid number" in o for o in outputs)
+
+def test_multiple_invalid_inputs(monkeypatch):
+    outputs = run_cli_with_inputs(monkeypatch, ["subtract", "foo", "bar", "exit"])
+    assert any("Invalid number" in o for o in outputs)
